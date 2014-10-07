@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- eclipseビルド時用 -->
+<project name="ChatworkNotificator-Dev" default="copy">
+	<property name="builddir" value="build"/>
+
+	<target name="copy">
+		<copy todir="${builddir}/classes">
+			<fileset dir="resources">
+				<include name="*.png" />
+			</fileset>
+			<fileset file="app.properties"/>
+		</copy>
+	</target>
+</project>

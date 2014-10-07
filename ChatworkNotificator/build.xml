@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 実行ファイル作成用 -->
+<project name="ChatworkNotificator" default="makeJar">
+
+	<property name="jarName" value="chatwork-notificator" />
+	<property name="releasedir" value="release" />
+	<property name="releaseJar" value="${releasedir}/jar" />
+
+	<!-- バージョン情報 -->
+	<property name="app.version" value="1.0" />
+
+	<!-- ビルド日付 -->
+	<tstamp prefix="build-info">
+		<format property="current-date" pattern="yyyy/MM/dd" locale="ja" />
+		<format property="current-time" pattern="hh:mm:ss" locale="ja" />
+	</tstamp>
+
+	<!-- Clean -->
+	<target name="clean" description="clean">
+		<delete>
+			<fileset dir="${releaseJar}" />
+		</delete>
+	</target>
+
+	<!-- コンパイルと実行可能Jar作成 -->
+	<target name="makeJar" description="make executable jar" depends="clean">
+		<mkdir dir="work" />
+		<path id="libraries">
+			<fileset dir="lib">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<javac srcdir="src" destdir="work" debug="true" deprecation="true" target="1.7" encoding="UTF-8">
+			<classpath refid="libraries" />
+		</javac>
+		<copy todir="work">
+			<fileset dir="src">
+				<exclude name="*.java" />
+			</fileset>
+		</copy>
+
+		<!-- Jar作成 -->
+		<jar basedir="work" destfile="${releaseJar}/${jarName}_${app.version}.jar">
+			<manifest>
+				<attribute name="Main-Class" value="jp.mrymtmk.messenger.main" />
+				<attribute name="Class-Path" value="${classpath}" />
+
+				<attribute name="Built-By" value="mrymtmk" />
+				<attribute name="Built-On" value="${build-info.current-date}" />
+				<attribute name="Built-At" value="${build-info.current-time}" />
+
+				<attribute name="Specification-Title" value="ChatworkMessenger" />
+				<attribute name="Specification-Version" value="${app.version}" />
+				<attribute name="Specification-Vendor" value="mrymtmk" />
+				<attribute name="Implementation-Title" value="ChatworkMessenger" />
+				<attribute name="Implementation-Version" value="${build-info.current-date}" />
+				<attribute name="Implementation-Vendor" value="mrymtmk" />
+			</manifest>
+		</jar>
+
+		<!-- 必要リソース配置 -->
+		<copy todir="${releaseJar}">
+			<fileset dir="resources">
+				<include name="*.properties" />
+				<include name="*.png" />
+			</fileset>
+			<fileset file="LICENSE" />
+			<fileset file="README.md" />
+		</copy>
+		<copy todir="${releaseJar}/lib">
+			<fileset dir="lib" />
+		</copy>
+		<delete dir="work" />
+	</target>
+</project>
